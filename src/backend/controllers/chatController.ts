@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { intentAnalysisSchema } from '../schemas/intentSchema';
 import { fetchMoviesFromTMDB } from '../services/tmdbService';
-import { connectToDB } from '../services/db';
+import { connectToDB } from '../db';
 import { ChatSession } from '../schemas/chatModel';
 import { Movie } from '../schemas/movieSchema';
 
