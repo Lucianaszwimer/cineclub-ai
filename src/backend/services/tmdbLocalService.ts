@@ -7,15 +7,15 @@ export class TmdbLocalService implements IMovieRepository {
 
   constructor(initialMovies?: Movie[]) {
     this.mockDatabase = initialMovies || [
-      { title: "Toy Story", genres: ["animacion", "comedia"], year: 1995, rating: 8.3 },
-      { title: "When Harry Met Sally", genres: ["romance"], year: 1989, rating: 7.6 },
-      { title: "Back to the Future", genres: ["ciencia ficcion", "comedia", "aventuras"], year: 1985, rating: 8.5 },
-      { title: "Ratatouille", genres: ["animacion", "comedia"], year: 2007, rating: 8.0 },
-      { title: "Devil Wears Prada", genres: ["comedia"], year: 2006, rating: 6.9 },
-      { title: "IT", genres: ["terror"], year: 2017, rating: 7.3 },
-      { title: "Good Will Hunting", genres: ["drama"], year: 1997, rating: 8.3 },
-      { title: "Little Women", genres: ["drama", "romance"], year: 2019, rating: 7.8 },
-      { title: "ET", genres: ["ciencia ficcion"], year: 1982, rating: 7.8 }
+      { title: "Toy Story", genres: ["animacion", "comedia"], year: 1995, rating: 8.3, original_language: "en"},
+      { title: "When Harry Met Sally", genres: ["romance"], year: 1989, rating: 7.6, original_language: "en"},
+      { title: "Back to the Future", genres: ["ciencia ficcion", "comedia", "aventuras"], year: 1985, rating: 8.5, original_language: "en"},
+      { title: "Ratatouille", genres: ["animacion", "comedia"], year: 2007, rating: 8.0, original_language: "en"},
+      { title: "Devil Wears Prada", genres: ["comedia"], year: 2006, rating: 6.9, original_language: "en"},
+      { title: "IT", genres: ["terror"], year: 2017, rating: 7.3, original_language: "en"},
+      { title: "Good Will Hunting", genres: ["drama"], year: 1997, rating: 8.3, original_language: "en"},
+      { title: "Little Women", genres: ["drama", "romance"], year: 2019, rating: 7.8, original_language: "en"},
+      { title: "ET", genres: ["ciencia ficcion"], year: 1982, rating: 7.8, original_language: "en"}
     ];
   }
 
@@ -40,6 +40,10 @@ export class TmdbLocalService implements IMovieRepository {
       filtered = filtered.filter((m) =>
         m.genres.some((g) => searchGenres.includes(g))
       );
+    }
+
+    if (filters.original_language) {
+      filtered = filtered.filter((m) => m.original_language === filters.original_language);
     }
 
     return movieArraySchema.parse(filtered);

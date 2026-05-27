@@ -8,6 +8,7 @@ export const intentAnalysisSchema = z.object({
     genres: z.array(z.string()).optional(),
     year: z.number().optional(),
     rating: z.number().optional(),
+    original_language: z.string().optional()
   }),
   explanation: z.string(),
 });

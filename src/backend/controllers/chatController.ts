@@ -58,7 +58,8 @@ export async function handleChatLogic(messages: ChatMessage[], sessionId?: strin
             "title": string opcional,
             "genres": array de strings opcional,
             "year": number opcional,
-            "rating": number opcional
+            "rating": number opcional,
+            "original_language": string opcional
           },
           "explanation": string breve
         }
@@ -85,14 +86,15 @@ export async function handleChatLogic(messages: ChatMessage[], sessionId?: strin
       title: validatedAnalysis.extractedParameters.title,
       genres: validatedAnalysis.extractedParameters.genres?.join(','), 
       year: validatedAnalysis.extractedParameters.year,
-      rating: validatedAnalysis.extractedParameters.rating
+      rating: validatedAnalysis.extractedParameters.rating,
+      original_language: validatedAnalysis.extractedParameters.original_language
     });
     
     if (movies.length === 0) {
       finalAssistantResponse = 'Analicé tu propuesta para el ciclo, pero actualmente no encontré películas en nuestro catálogo que coincidan exactamente con esos filtros.';
     } else {
       finalAssistantResponse = `¡Lista de cine armado con éxito! Acá tenés las opciones ideales que encontré en el catálogo:\n` +
-        movies.map(m => `🎬 **${m.title}** (${m.year}) - ⭐ Rating: ${m.rating}`).join('\n');
+        movies.map(m => `🎬 ${m.title} - (${m.year}) - ⭐ Rating: ${m.rating} - 🌍 Idioma: ${m.original_language}`).join('\n');
     }
   } else {
     const generalResponse = await openai.chat.completions.create({

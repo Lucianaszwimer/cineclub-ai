@@ -102,7 +102,7 @@ export default function ChatWindow() {
         {messages.length === 0 && (
           <div className="text-center py-12 px-4 text-zinc-500 space-y-2">
             <p className="text-lg font-medium text-zinc-400">¡Hola! Te doy la bienvenida al Cineclub. 🎉</p>
-            <p className="text-sm max-w-sm mx-auto">Podés pedirme recomendaciones diciendo cosas como: *&quot;Quiero ver una comedia de 1985&quot;* o charlar de directores libres.</p>
+            <p className="text-sm max-w-sm mx-auto">Podés pedirme recomendaciones diciendo cosas como: &quot;Quiero ver una comedia de 1985&quot; o charlar de directores libres.</p>
           </div>
         )}
 

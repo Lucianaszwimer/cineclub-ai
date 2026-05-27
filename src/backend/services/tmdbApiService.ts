@@ -39,6 +39,10 @@ export class TmdbApiService implements IMovieRepository {
       queryParams['vote_average.gte'] = filters.rating;
     }
 
+    if(filters.original_language) {
+      queryParams.with_original_language = filters.original_language;
+    }
+
     try {
       const response = await axios.get(endpoint, { params: queryParams });
 
@@ -48,6 +52,7 @@ export class TmdbApiService implements IMovieRepository {
         release_date?: string;
         vote_average?: number;
         genre_ids?: number[];
+        original_language?: string;
       };
 
       const tmdbResults = (response.data.results || []) as TMDBMovie[];
@@ -69,9 +74,10 @@ export class TmdbApiService implements IMovieRepository {
 
         return {
           title: movie.title || movie.original_title,
-          genres: finalGenres, // Garantiza que sea un array de strings para evitar ZodError 🎉
+          genres: finalGenres, 
           year: movie.release_date ? parseInt(movie.release_date.split('-')[0], 10) : 2026,
-          rating: movie.vote_average || 0
+          rating: movie.vote_average || 0,
+          original_language: movie.original_language || undefined
         };
       });
 
