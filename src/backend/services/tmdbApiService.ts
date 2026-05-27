@@ -25,11 +25,13 @@ export class TmdbApiService implements IMovieRepository {
     }
 
     if (filters.genres) {
-      const genreIds = filters.genres
+      const genrePromises = filters.genres
         .split(',')
-        .map((g) => this.getTmdbGenreId(g.trim()))
-        .filter((v): v is number => !!v);
-      
+        .map((g) => this.getTmdbGenreId(g.trim()));
+
+      const genreResults = await Promise.all(genrePromises);
+      const genreIds = genreResults.filter((v): v is number => v !== null);
+
       if (genreIds.length > 0) {
         queryParams.with_genres = genreIds.join(',');
       }
@@ -40,7 +42,18 @@ export class TmdbApiService implements IMovieRepository {
     }
 
     if(filters.original_language) {
+      if(filters.original_language.length !== 2) {
+        const response = await axios.get(`${this.baseUrl}/configuration/languages`, { params: { api_key: this.apiKey, language: 'es-ES' } });
+        //TODO: tengo que traducir filter.original_language a ingles para que se pueda buscar en español
+        const language = response.data.find((lang: { english_name: string }) => lang.english_name.toLowerCase() === filters.original_language!.toLowerCase());
+        if (language) {
+          queryParams.with_original_language = language.iso_639_1;
+        } else {
+          console.warn(`Idioma no encontrado en TMDB: ${filters.original_language}`);
+        }        
+      }else{
       queryParams.with_original_language = filters.original_language;
+      }
     }
 
     try {
@@ -57,15 +70,15 @@ export class TmdbApiService implements IMovieRepository {
 
       const tmdbResults = (response.data.results || []) as TMDBMovie[];
 
-      const mappedMovies = tmdbResults.map((movie: TMDBMovie) => {
+      const mappedMovies = await Promise.all(tmdbResults.map(async (movie: TMDBMovie) => {
         let finalGenres: string[] = [];
 
         if (filters.genres) {
           finalGenres = filters.genres.split(',').map((g) => g.trim().toLowerCase());
         } else if (movie.genre_ids && movie.genre_ids.length > 0) {
-          finalGenres = movie.genre_ids
-            .map((id) => this.getGenreNameFromId(id))
-            .filter((v): v is string => !!v);
+          const genrePromises = movie.genre_ids.map((id) => this.getGenreNameFromId(id));
+          const genreResults = await Promise.all(genrePromises);
+          finalGenres = genreResults.filter((v): v is string => v !== null);
         }
 
         if (finalGenres.length === 0) {
@@ -74,12 +87,12 @@ export class TmdbApiService implements IMovieRepository {
 
         return {
           title: movie.title || movie.original_title,
-          genres: finalGenres, 
+          genres: finalGenres,
           year: movie.release_date ? parseInt(movie.release_date.split('-')[0], 10) : 2026,
           rating: movie.vote_average || 0,
           original_language: movie.original_language || undefined
         };
-      });
+      }));
 
       return movieArraySchema.parse(mappedMovies);
 
@@ -89,29 +102,15 @@ export class TmdbApiService implements IMovieRepository {
     }
   }
 
-  private getTmdbGenreId(genreName: string): number | null {
-    const genres: { [key: string]: number } = {
-      'accion': 28,
-      'ciencia ficcion': 878,
-      'drama': 18,
-      'comedia': 35,
-      'terror': 27,
-      'romance': 10749,
-      'animacion': 16
-    };
-    return genres[genreName.toLowerCase().trim()] || null;
+  async getTmdbGenreId(genreName: string): Promise<number | null> {
+    const response = await axios.get(`${this.baseUrl}/genre/movie/list`, { params: { api_key: this.apiKey, language: 'es-ES' } });
+    const genre = response.data.genres.find((g: { name: string }) => g.name.toLowerCase() === genreName.toLowerCase());
+    return genre ? genre.id : null;
   }
 
-  private getGenreNameFromId(id: number): string | null {
-    const genreIds: { [key: number]: string } = {
-      28: 'accion',
-      878: 'ciencia ficcion',
-      18: 'drama',
-      35: 'comedia',
-      27: 'terror',
-      10749: 'romance',
-      16: 'animacion'
-    };
-    return genreIds[id] || null;
+  async getGenreNameFromId(id: number): Promise<string | null> {
+    const response = await axios.get(`${this.baseUrl}/genre/movie/list`, { params: { api_key: this.apiKey, language: 'es-ES' } });
+    const genre = response.data.genres.find((g: { id: number }) => g.id === id);
+    return genre ? genre.name : null;
   }
 }
