@@ -15,7 +15,7 @@ export default function ChatWindow() {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Scroll automático al final cada vez que llega un mensaje nuevo
+  // scroll automático al final cada vez que llega un mensaje nuevo
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -30,26 +30,38 @@ export default function ChatWindow() {
 
     const userMessage: Message = { role: 'user', content: input };
     
-    // Actualizamos la pantalla inmediatamente con el mensaje del usuario
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
     try {
-      // Mandamos el mensaje a tu API route de Next.js
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...messages, userMessage], // Enviamos el historial + el nuevo mensaje
-          sessionId: sessionId // Enviamos el ID de sesión si ya existe
+          messages: [...messages, userMessage],
+          sessionId: sessionId 
         }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        const errorMessage =
+          response.status === 500
+            ? '❌ Hubo un error interno del servidor. Intentá de nuevo en unos segundos.'
+            : errorData?.error || '❌ Hubo un problema al procesar tu mensaje.';
+
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', content: errorMessage }
+        ]);
+        return;
+      }
 
       const data = await response.json();
 
       if (data.sessionId) {
-        setSessionId(data.sessionId); // Guardamos el ID de Mongo para el próximo mensaje
+        setSessionId(data.sessionId);
       }
 
       if (data.message) {
@@ -67,7 +79,7 @@ export default function ChatWindow() {
   };
 
   return (
-    <div className="flex flex-col h-[85vh] max-w-2xl mx-auto border border-zinc-800 rounded-xl bg-zinc-950 shadow-2xl overflow-hidden">
+    <div className="flex flex-col h-[clamp(34rem,78dvh,50rem)] w-full max-w-2xl mx-auto border border-zinc-800 rounded-xl bg-zinc-950 shadow-2xl overflow-hidden min-h-0">
       {/* Encabezado */}
       <div className="bg-zinc-900 border-b border-zinc-800 p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -86,7 +98,7 @@ export default function ChatWindow() {
       </div>
 
       {/* Cuerpo del Chat / Mensajes */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-zinc-950 to-zinc-900">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-zinc-950 to-zinc-900">
         {messages.length === 0 && (
           <div className="text-center py-12 px-4 text-zinc-500 space-y-2">
             <p className="text-lg font-medium text-zinc-400">¡Hola! Te doy la bienvenida al Cineclub. 🎉</p>
@@ -100,7 +112,7 @@ export default function ChatWindow() {
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap shadow-md ${
+              className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap break-words shadow-md ${
                 msg.role === 'user'
                   ? 'bg-indigo-600 text-white rounded-br-none'
                   : 'bg-zinc-800 text-zinc-100 rounded-bl-none border border-zinc-700'
