@@ -6,6 +6,8 @@ export interface MovieFilters {
   year?: number;
   rating?: number;
   original_language?: string;
+  limit?: number;
+  sort?: 'worst' | 'best';
 }
 
 export interface IMovieRepository {

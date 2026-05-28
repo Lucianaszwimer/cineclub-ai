@@ -3,7 +3,7 @@ import { IMovieRepository, MovieFilters } from '../interfaces/movieInterface';
 import { movieArraySchema } from '../schemas/movieSchema';
 import { Movie } from '../schemas/movieSchema';
 
-export class TmdbApiService implements IMovieRepository {
+export class TmdbApiRepository implements IMovieRepository {
   private apiKey = process.env.TMDB_API_KEY;
   private baseUrl = process.env.TMDB_BASE_URL;
 
@@ -149,13 +149,25 @@ export class TmdbApiService implements IMovieRepository {
         return {
           title: movie.title || movie.original_title,
           genres: finalGenres,
-          year: movie.release_date ? parseInt(movie.release_date.split('-')[0], 10) : 2026,
+          year: movie.release_date ? parseInt(movie.release_date.split('-')[0], 10) : undefined,
           rating: movie.vote_average || 0,
           original_language: movie.original_language || undefined
         };
       });
 
-      return movieArraySchema.parse(mappedMovies);
+      let finalMovies = mappedMovies;
+
+      if (filters.sort === 'best') {
+        finalMovies.sort((a, b) => b.rating - a.rating);
+      } else if (filters.sort === 'worst') {
+        finalMovies.sort((a, b) => a.rating - b.rating);      
+      }
+
+      if (filters.limit && filters.limit > 0) {
+        finalMovies = mappedMovies.slice(0, filters.limit);
+      }
+
+      return movieArraySchema.parse(finalMovies);
 
     } catch (error) {
       console.error("Error en repositorio de TMDB API con Axios:", error);

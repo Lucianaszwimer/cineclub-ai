@@ -1,5 +1,5 @@
-import { TmdbApiService } from './tmdbApiService';
-import { TmdbLocalService } from './tmdbLocalService';
+import { TmdbApiRepository } from '../repositories/tmdbApiRepository';
+import { TmdbLocalRepository } from '../repositories/tmdbLocalRepository';
 import { MovieFilters } from '../interfaces/movieInterface';
 import { Movie } from '../schemas/movieSchema';
 
@@ -10,8 +10,8 @@ export async function fetchMoviesFromTMDB(filters: MovieFilters, mockData?: Movi
     process.env.USE_LOCAL_MOVIES === 'true';
 
   const repository = useLocal 
-    ? new TmdbLocalService(mockData) 
-    : new TmdbApiService();
+    ? new TmdbLocalRepository(mockData) 
+    : new TmdbApiRepository();
 
   return await repository.fetchMovies(filters);
 }

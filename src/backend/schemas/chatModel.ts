@@ -1,4 +1,4 @@
-import mongoose, { Schema  } from 'mongoose';
+import mongoose, { Schema, model, models } from 'mongoose';
 
 //mensaje suelto
 const MessageSchema = new Schema({
@@ -19,13 +19,26 @@ const MessageSchema = new Schema({
 
 //una sesión va a contener un identificador único, una fecha de creación y un array de mensajes
 // sesion (lista de mensajes)
+// src/backend/schemas/chatModel.ts
+
 const ChatSessionSchema = new Schema({
-  createdAt: { 
-    type: Date, 
-    default: Date.now 
+  sessionId: { 
+    type: String, 
+    required: true, 
+    unique: true, // Evita duplicados a nivel base de datos
+    trim: true 
   },
-  messages: [MessageSchema] // Guardamos un array de mensajes adentro
+  messages: [
+    {
+      role: { type: String, required: true, enum: ['user', 'assistant', 'system'] },
+      content: { type: String, required: true },
+      movies: { type: Array, default: undefined }, // Para tus MovieCards
+      createdAt: { type: Date, default: Date.now }
+    }
+  ]
+}, {
+  timestamps: true // Te crea automáticamente el createdAt y updatedAt de la sesión entera
 });
 
-// exportamos el modelo asegurando que Next.js no lo duplique en memoria
-export const ChatSession = mongoose.models.ChatSession || mongoose.model("ChatSession", ChatSessionSchema);
+// Exportamos protegiendo contra la recompilación de Next.js
+export const ChatSession = models.ChatSession || model('ChatSession', ChatSessionSchema);

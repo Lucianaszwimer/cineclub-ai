@@ -2,7 +2,7 @@ import { IMovieRepository, MovieFilters } from '../interfaces/movieInterface';
 import { movieArraySchema } from '../schemas/movieSchema';
 import { Movie } from '../schemas/movieSchema';
 
-export class TmdbLocalService implements IMovieRepository {
+export class TmdbLocalRepository implements IMovieRepository {
   private mockDatabase: Movie[];
 
   constructor(initialMovies?: Movie[]) {
