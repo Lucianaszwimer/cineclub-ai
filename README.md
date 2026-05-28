@@ -88,9 +88,9 @@ src
     │   └── tmdbApiRepository.ts 
     │   └── tmdbLocalRepository.ts     
     └── schemas/
-        ├── chatModel.ts           # Esquema Mongoose(ChatSession)
-        ├── intentSchema.ts        
-        └── movieSchema.ts  
+    │   ├── chatModel.ts           # Esquema Mongoose(ChatSession)
+    │   ├── intentSchema.ts        
+    │   └── movieSchema.ts  
     └── services/
         └── tmdbService.ts  
 ```
