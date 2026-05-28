@@ -2,7 +2,7 @@
 ### Llegó la solución para tus sábados a la noche! 🥳🙌🎬🍿🎥 
 ### Cineclub es una plataforma que te ayuda a elegir qué pelicula ver entre todas las opciones posibles. ¿Cómo lo hace? A través de un chatbot contruido con inteligencia artifical que te arma una lista de peliculas en base a tus preferencias de género, año de lanzamiento, rating global e idioma original.
 ### Antes tenías que entrar a cada servicio de streaming, ver que peliculas tienen para ofrecer, filtrarlas por el genero que te guste, seleccionar una entre todas las opciones y buscar que reviews tiene. Ahora todo eso se simplifica con un click!
-![alt text](image.png)
+![alt text](/src/public/image.png)
 ### **Problema que resuelve: ¿Qué flujo de trabajo manual automatiza o simplifica?**
 Hoy en día con tantas plataformas de streaming, tantas recomendaciones diversas y tanto 
 contenido por ver, son muchas las propuestas de películas para ver en tu tiempo libre.
@@ -37,15 +37,20 @@ Un usuario lo eligiría por sobre hacerlo manualmente porque es más facil elegi
 3) Como usuario recurrente, quiero que mis conversaciones queden registradas para poder acceder a mensajes viejos.
 
     Criterios de aceptación:
-    - [ ] Cada vez que el usuario envía un mensaje (user) o el bot responde (assistant), la conversación completa debe actualizarse y quedar guardada en el documento correspondiente de la colección ChatSession en MongoDB Compass. 
-    - [ ] Si el frontend envía un _sessionId_ válido en la cabecera o cuerpo de la petición, el controlador debe buscar la sesión existente en la base de datos en lugar de crear una nueva.
-    - [ ] Al reabrir o refrescar una conversación existente, el componente del frontend (ChatWindow) debe listar cronológicamente todos los mensajes previos guardados en esa sesión.
-    - [ ] Si el _sessionId_ que llega desde el frontend tiene un formato corrupto o no se encuentra en la base de datos, el sistema debe crear una sesión limpia automáticamente en lugar de lanzar un error 500 o colgar la app.
+   - [ ] El sistema debe agrupar los mensajes de una misma conversación bajo un mismo sessionId usando la lógica de upsert, evitando duplicar documentos en la base de datos por cada interacción y logrando una persistencia única por sesion.
+   - [ ] Al registrar la respuesta del asistente, el documento en MongoDB debe guardar tanto el texto plano como el array de objetos de la propiedad movies para conservar las tarjetas de películas recomendadas.
+   - [ ] Al ingresar un ID válido, la API de Next.js debe resolver los parámetros de la URL de forma asíncrona y renderizar en la ChatWindow la conversación cronológica completa con sus respectivas MovieCards. Si el usuario ingresa un ID inexistente o incorrecto, el buscador no debe limpiar el chat actual y debe desplegar un mensaje flotante de advertencia indicando que el ID no es válido.
+   - [ ] Al enviar un nuevo mensaje dentro de un chat recuperado, el frontend debe heredar el sessionId actual para que los nuevos mensajes se sigan anexando a ese mismo registro en la base de datos.
 
 ------
 ● ¿Por qué elegiste esas tools/APIs?
+
 ● ¿Cómo diseñaste el prompt del agente y qué estrategia de few-shot usás?
+
 ● ¿Cómo manejás errores, edge cases y respuestas inesperadas del LLM?
+
 ● ¿Qué schema usás para validar outputs estructurados?
-● Limitaciones conocidas
+
+● Limitaciones conocidas --> la traduccion del lenguaje esta hardcodeado, entonces si ingresan en español un lenguaje no hardcodeado, no funciona. 
+
 ● Mejoras futuras planeadas
