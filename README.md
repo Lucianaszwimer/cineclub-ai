@@ -70,23 +70,29 @@ src
 │   │   │   └── ChatWindow.tsx 
 │   │   ├── header/
 │   │   │   └── Header.tsx     
-│   │   └── movieCard/             
-│   └── page.tsx                  
+│   │   └── movieCard/  
+│   │       └── MovieCard.tsx                 
+│   └── page.tsx 
+│   └── layout.tsx                  
 └── backend/
     ├── controllers/
     │   └── chatController.ts
     ├── db.ts                 # Singleton conexión única MongoDB
     ├── interfaces/
     │   └── chatRepositoryInterface.ts 
+    │   └── movieInterface.ts 
     ├── prompts/
     │   └── intentPrompt.ts       
     ├── repositories/
     │   ├── mongoChatRepository.ts 
-    │   └── tmdbApiRepository.ts   
+    │   └── tmdbApiRepository.ts 
+    │   └── tmdbLocalRepository.ts     
     └── schemas/
         ├── chatModel.ts           # Esquema Mongoose(ChatSession)
         ├── intentSchema.ts        
-        └── movieSchema.ts         
+        └── movieSchema.ts  
+    └── services/
+        └── tmdbService.ts  
 ```
 
 ## Justificaciones del desarrollo
