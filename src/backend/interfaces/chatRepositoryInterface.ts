@@ -3,7 +3,7 @@ import { Movie } from '../schemas/movieSchema';
 export interface IChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
-  movies?: Movie[]; // Aquí puedes definir mejor el tipo según tu MovieCard
+  movies?: Movie[]; 
   createdAt?: Date;
 }
 

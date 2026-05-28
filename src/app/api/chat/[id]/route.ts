@@ -4,11 +4,9 @@ import { MongoChatRepository } from '../../../../backend/repositories/mongoChatR
 
 const chatRepository = new MongoChatRepository();
 
-// src/app/api/chat/[id]/route.ts
-
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> } // 👈 Declaramos que es una Promise
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const resolvedParams = await params;

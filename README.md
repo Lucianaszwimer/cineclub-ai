@@ -190,3 +190,8 @@ La API externa que utilizamos nos traía los idiomas escritos en inglés, cosa q
 [ ] **Inicio de sesión:** Para poder implementar las funcionalidades previamente mencionadas, habría que permitirle al usuario registrarse y que dentro de `Usuario` se guarden las sesiones, la lista de peliculas a ver (Watchlist) y las preferencias.
 
 ## Capturas de pantalla
+![alt text](</src/public/Captura de Pantalla 2026-05-28 a la(s) 15.44.44.png>)
+
+## Bonus
+* **Test Unitarios**
+* **Uso de archivo prompt para el razonamiento del agente**

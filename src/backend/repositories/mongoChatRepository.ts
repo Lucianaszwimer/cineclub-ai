@@ -47,7 +47,7 @@ export class MongoChatRepository implements IChatRepository {
     { sessionId: sessionId.trim() },
     { $set: { messages: messagesWithDates } },
     { 
-      returnDocument: 'after', // Es el reemplazo moderno de "new: true" que te pedía la consola
+      returnDocument: 'after', 
       upsert: true,            // Si existe lo pisa, si no existe lo crea de una
       runValidators: true 
     }
