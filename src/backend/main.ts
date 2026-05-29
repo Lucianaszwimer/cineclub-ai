@@ -12,7 +12,10 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
   app.enableCors({
-    origin: true,
+    origin: [
+    'http://localhost:5173', 
+    'https://cineclub-ai.vercel.app'
+    ],
     credentials: true
   });
   app.useGlobalFilters(new GlobalExceptionFilter());
