@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": "src",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "lib": ["ES2021"],
+    "types": ["node"],
+    "jsx": "preserve"
+  },
+  "include": ["src/backend/**/*.ts", "src/shared/**/*.ts"],
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "src/**/*.tsx"]
+}
