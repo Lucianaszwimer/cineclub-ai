@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Movie } from '../../../backend/schemas/movieSchema'; 
+import { Movie } from '../../../shared/types/movie'; 
 
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
@@ -38,7 +38,7 @@ export default function Header({ onSessionLoaded }: HeaderProps) {
       // 🔥 Elevamos los datos de la sesión encontrada hacia el padre (page.tsx)
       onSessionLoaded(data.sessionId, data.messages);
       setSearchId(''); // Limpiamos el buscador
-    } catch (err) {
+    } catch {
       setError('Error al conectar con el servidor.');
     } finally {
       setIsLoading(false);

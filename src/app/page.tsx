@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import ChatWindow from './components/chatWindow/ChatWindow';
 import Header from './components/header/Header';
-import { Movie } from '../backend/schemas/movieSchema';
+import { Movie } from '../shared/types/movie';
 
 interface Message {
   role: 'user' | 'assistant' | 'system';

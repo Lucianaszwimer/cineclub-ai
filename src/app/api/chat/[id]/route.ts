@@ -1,39 +1,36 @@
 import { NextResponse } from 'next/server';
-import { connectToDB } from '../../../../backend/db';
-import { MongoChatRepository } from '../../../../backend/repositories/mongoChatRepository';
-
-const chatRepository = new MongoChatRepository();
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
   try {
-    const resolvedParams = await params;
-    const id = resolvedParams.id;
+    const nestBaseUrl = process.env.NEST_BASE_URL || 'http://localhost:3001';
 
-    const uri = process.env.DATABASE_URL || "mongodb://localhost:27017/cineclub";
-    await connectToDB(uri);
-
-    const existingSession = await chatRepository.findSessionById(id);
-
-    if (!existingSession) {
-      return NextResponse.json(
-        { error: 'El ID de sesión ingresado no es válido.' },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      sessionId: existingSession.sessionId,
-      messages: existingSession.messages
+    const response = await fetch(`${nestBaseUrl}/chat/${params.id}`, {
+      method: 'GET',
+      headers: {
+        'x-request-id': request.headers.get('x-request-id') || crypto.randomUUID()
+      },
+      cache: 'no-store',
+      signal: controller.signal
     });
 
-  } catch (error) {
-    console.error("Error al recuperar la sesión pasada:", error);
+    const payload = await response.json().catch(() => ({
+      error: 'Respuesta inválida del backend.',
+      code: 'INVALID_BACKEND_RESPONSE'
+    }));
+
+    return NextResponse.json(payload, { status: response.status });
+  } catch {
     return NextResponse.json(
-      { error: 'Error interno del servidor.' },
-      { status: 500 }
+      { error: 'No se pudo conectar con el backend Nest.', code: 'BACKEND_UNAVAILABLE' },
+      { status: 503 }
     );
+  } finally {
+    clearTimeout(timeout);
   }
 }

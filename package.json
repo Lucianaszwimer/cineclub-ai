@@ -4,13 +4,22 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:nest": "tsx watch src/backend/main.ts",
+    "test": "tsx --test src/backend/test/*.test.ts",
+    "dev:full": "concurrently \"npm run dev\" \"npm run dev:nest\"",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "test:unitario": "tsx --test src/test/unitario/searchMoviesTest.ts"
+    "lint": "eslint"
   },
   "dependencies": {
+    "@nestjs/common": "^11.1.8",
+    "@nestjs/core": "^11.1.8",
+    "@nestjs/mongoose": "^11.0.3",
+    "@nestjs/platform-express": "^11.1.8",
     "axios": "^1.16.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "concurrently": "^9.2.1",
     "lucide-react": "^1.16.0",
     "mongoose": "^9.6.2",
     "next": "16.2.6",

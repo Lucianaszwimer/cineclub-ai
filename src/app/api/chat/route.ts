@@ -1,32 +1,36 @@
 import { NextResponse } from 'next/server';
-import { handleChatLogic } from '../../../backend/controllers/chatController';
 
 export async function POST(request: Request) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
   try {
     const body = await request.json();
-    const { messages, sessionId } = body;
+    const nestBaseUrl = process.env.NEST_BASE_URL || 'http://localhost:3001';
 
-    if (!messages || !Array.isArray(messages)) {
-      return NextResponse.json(
-        { error: 'El formato de los mensajes no es válido.' },
-        { status: 400 }
-      );
-    }
-
-    const controllerResult = await handleChatLogic(messages, sessionId);
-
-    return NextResponse.json(controllerResult);
-
-  } catch (error: unknown) {
-    console.error('Error crítico en el endpoint de la API Route /api/chat:', error);
-    
-    // error de Zod o de conexión
-    return NextResponse.json(
-      { 
-        error: 'Hubo un error al procesar el chat.', 
-        details: error instanceof Error ? error.message : String(error) 
+    const response = await fetch(`${nestBaseUrl}/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-request-id': request.headers.get('x-request-id') || crypto.randomUUID()
       },
-      { status: 500 }
+      body: JSON.stringify(body),
+      cache: 'no-store',
+      signal: controller.signal
+    });
+
+    const payload = await response.json().catch(() => ({
+      error: 'Respuesta inválida del backend.',
+      code: 'INVALID_BACKEND_RESPONSE'
+    }));
+
+    return NextResponse.json(payload, { status: response.status });
+  } catch {
+    return NextResponse.json(
+      { error: 'No se pudo conectar con el backend Nest.', code: 'BACKEND_UNAVAILABLE' },
+      { status: 503 }
     );
+  } finally {
+    clearTimeout(timeout);
   }
 }

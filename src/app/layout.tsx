@@ -1,6 +1,5 @@
 import React from 'react';
 import './globals.css'; 
-import ChatWindow from './components/chatWindow/ChatWindow';
 
 export const metadata = {
   title: 'Cineclub AI',

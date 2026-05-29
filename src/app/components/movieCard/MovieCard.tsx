@@ -1,5 +1,5 @@
 import React from 'react';
-import { Movie } from '../../../backend/schemas/movieSchema';
+import { Movie } from '../../../shared/types/movie';
 
 interface MovieCardProps {
   movie: Movie;

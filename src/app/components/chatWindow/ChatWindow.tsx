@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { MovieCard } from '../../components/movieCard/MovieCard';
-import { Movie } from '../../../backend/schemas/movieSchema';
+import { Movie } from '../../../shared/types/movie';
 
 interface Message {
   role: 'user' | 'assistant' | 'system';
