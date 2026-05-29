@@ -7,9 +7,12 @@
     "dev:nest": "tsx watch src/backend/main.ts",
     "test": "tsx --test src/backend/test/*.test.ts",
     "dev:full": "concurrently \"npm run dev\" \"npm run dev:nest\"",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:front": "vite build",
+    "build:back": "nest build",
+    "build": "npm run build:front && npm run build:back",
+    "start": "node dist/backend/main.js",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.8",

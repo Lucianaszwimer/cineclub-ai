@@ -12,13 +12,15 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
   app.enableCors({
-    origin: ['http://localhost:5173'],
-    credentials: true
+  origin: ['https://cineclub.com', 'http://localhost:3000'],
+  credentials: true
   });
+
+
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
 
-  const port = config.get('NEST_PORT');
+  const port = process.env.PORT || config.get('NEST_PORT') || 3000;
   await app.listen(port);
   logger.log(`Backend Nest escuchando en puerto ${port}`);
 }
