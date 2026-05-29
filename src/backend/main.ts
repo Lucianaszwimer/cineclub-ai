@@ -12,11 +12,9 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
   app.enableCors({
-  origin: ['https://cineclub.com', 'http://localhost:3000'],
-  credentials: true
+    origin: ['http://clineclub', 'http://localhost:5173'],
+    credentials: true
   });
-
-
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
 
