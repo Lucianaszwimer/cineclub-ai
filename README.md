@@ -127,7 +127,7 @@ Delegamos la validación de existencia al motor de la base de datos. MongoDB dec
 + `openai`: SDK oficial para la comunicación e integración con el modelo gpt-4o-mini.
 + `mongoose`: ODM nativo para la conexión, modelado y persistencia atómica en MongoDB.
 + `zod`: Librería de declaración y validación de esquemas en tiempo de ejecución (análisis de outputs del LLM).
-+ `next`: Framework base del entorno de ejecución de la aplicación.
++ `nest`: 
 + `react y react-dom`: Biblioteca de interfaz de usuario.
 
 **Desarrollo (devDependencies)**
@@ -185,7 +185,7 @@ La API externa que utilizamos nos traía los idiomas escritos en inglés, cosa q
 
 [ ] **Calificación propia:** Que el usuario pueda calificar las peliculas que vio y también en base a eso se podría mejorar el algoritmo del agente logrando que haga recomendaciones más acorde al usuario y más personalizadas.
 
-[ ] **Barra con historial:** Que en el constado del chat se encuentre el historial de sesiones del usuario, asi se simplifica la acción de buscar chat por ID.
+[ ] **Actualizacion de BD:** Cuando se borra la sesion del chat en el front, que tambien se borre en la base de datos.
 
 [ ] **Inicio de sesión:** Para poder implementar las funcionalidades previamente mencionadas, habría que permitirle al usuario registrarse y que dentro de `Usuario` se guarden las sesiones, la lista de peliculas a ver (Watchlist) y las preferencias.
 

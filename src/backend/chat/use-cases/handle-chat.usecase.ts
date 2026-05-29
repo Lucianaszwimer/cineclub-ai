@@ -11,7 +11,9 @@ import { ChatRepository } from '../repositories/chat.repository';
 const incomingMessagesSchema = z.array(
   z.object({
     role: z.enum(['user', 'assistant', 'system']),
-    content: z.string().min(1)
+    content: z.string().min(1),
+    movies: z.array(z.unknown()).optional(),
+    createdAt: z.coerce.date().optional()
   })
 ).min(1);
 

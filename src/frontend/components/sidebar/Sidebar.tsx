@@ -29,6 +29,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const [editingId, setEditingId] = useState<string>('');
   const [draftTitle, setDraftTitle] = useState('');
+  const [copiedId, setCopiedId] = useState<string>('');
 
   const canClear = useMemo(() => sessions.length > 0, [sessions.length]);
 
@@ -48,6 +49,18 @@ export default function Sidebar({
     onRenameSession(id, title);
     setEditingId('');
     setDraftTitle('');
+  };
+
+  const handleCopyId = async (id: string) => {
+    try {
+      await navigator.clipboard.writeText(id);
+      setCopiedId(id);
+      window.setTimeout(() => {
+        setCopiedId((current) => (current === id ? '' : current));
+      }, 1200);
+    } catch {
+      setCopiedId('');
+    }
   };
 
   return (
@@ -113,7 +126,21 @@ export default function Sidebar({
                     autoFocus
                   />
                 )}
-                <p className="text-[10px] text-zinc-500 truncate">{session.id}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <p className="text-[10px] text-zinc-500 truncate">{session.id}</p>
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      void handleCopyId(session.id);
+                    }}
+                    aria-label="Copiar ID de sesión"
+                    title="Copiar ID"
+                    className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+                  >
+                    {copiedId === session.id ? 'Copiado' : '📋'}
+                  </button>
+                </div>
                 <p className="text-[10px] text-zinc-500 mt-1">{formatDate(session.updatedAt)}</p>
               </button>
 
