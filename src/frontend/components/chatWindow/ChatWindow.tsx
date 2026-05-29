@@ -1,73 +1,76 @@
-"use client";
-
 import React, { useState, useRef, useEffect } from 'react';
-import { MovieCard } from '../../components/movieCard/MovieCard';
-import { Movie } from '../../../shared/types/movie';
-
-interface Message {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-  movies?: Movie[];
-}
+import { MovieCard } from '../movieCard/MovieCard';
+import { ChatMessage } from '../../../shared/types/chat';
+import { apiUrl } from '../../lib/api';
 
 interface ChatWindowProps {
   sessionId: string;
   setSessionId: React.Dispatch<React.SetStateAction<string>>;
-  messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  messages: ChatMessage[];
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+  onSessionPersist: (id: string, messages: ChatMessage[]) => void;
 }
 
-export default function ChatWindow({ sessionId, setSessionId, messages, setMessages }: ChatWindowProps) {
+export default function ChatWindow({
+  sessionId,
+  setSessionId,
+  messages,
+  setMessages,
+  onSessionPersist
+}: ChatWindowProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { //auto scroll
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = { role: 'user', content: input };
-    const updatedMessages = [...messages, userMessage]; 
-    
+    const userMessage: ChatMessage = { role: 'user', content: input };
+    const updatedMessages = [...messages, userMessage];
+
     setMessages(updatedMessages);
     setInput('');
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await fetch(apiUrl('/chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: updatedMessages,
-          sessionId: sessionId || undefined 
+          sessionId: sessionId || undefined
         })
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        const currentSessionId = data.sessionId || sessionId;
         if (data.sessionId) {
           setSessionId(data.sessionId);
         }
-        
-        setMessages((prev) => [...prev, data.message]);
+
+        const finalMessages = [...updatedMessages, data.message as ChatMessage];
+        setMessages(finalMessages);
+
+        if (currentSessionId) {
+          onSessionPersist(currentSessionId, finalMessages);
+        }
       }
-      } catch (error) {
-        console.error("Error al enviar mensaje:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    } catch (error) {
+      console.error('Error al enviar mensaje:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col h-[clamp(34rem,78dvh,50rem)] w-full border border-zinc-800 rounded-xl bg-zinc-950/80 shadow-2xl overflow-hidden backdrop-blur-sm min-h-0">
-      
-      {/* Encabezado interno del chat */}
       <div className="bg-zinc-900/50 border-b border-zinc-800 p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-2xl">🍿</span>
@@ -86,7 +89,6 @@ export default function ChatWindow({ sessionId, setSessionId, messages, setMessa
         )}
       </div>
 
-      {/* Cuerpo del Chat / Mensajes */}
       <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-zinc-950/40 to-zinc-900/40">
         {messages.length === 0 && (
           <div className="text-center py-12 px-4 text-zinc-500 space-y-2">
@@ -129,7 +131,6 @@ export default function ChatWindow({ sessionId, setSessionId, messages, setMessa
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Formulario de Entrada */}
       <form onSubmit={handleSendMessage} className="p-3 bg-zinc-900/50 border-t border-zinc-800 flex gap-2">
         <input
           type="text"

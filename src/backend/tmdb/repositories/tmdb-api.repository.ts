@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { ExternalServiceError } from '../../common/errors/app.error';
 import { AppConfigService } from '../../config/config.service';
@@ -6,7 +6,7 @@ import { TmdbGenre, TmdbLanguage, TmdbListResponse, TmdbMovieResult } from '../i
 
 @Injectable()
 export class TmdbApiRepository {
-  constructor(private readonly config: AppConfigService) {}
+  constructor(@Inject(AppConfigService) private readonly config: AppConfigService) {}
 
   private get apiKey(): string {
     return this.config.get('TMDB_API_KEY');

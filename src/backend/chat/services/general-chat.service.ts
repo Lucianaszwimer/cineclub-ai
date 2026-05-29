@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 import { ChatMessage } from '../interfaces/chat.types';
 import { AppConfigService } from '../../config/config.service';
@@ -7,7 +7,7 @@ import { AppConfigService } from '../../config/config.service';
 export class GeneralChatService {
   private readonly openai: OpenAI;
 
-  constructor(private readonly config: AppConfigService) {
+  constructor(@Inject(AppConfigService) private readonly config: AppConfigService) {
     this.openai = new OpenAI({ apiKey: this.config.get('OPENAI_API_KEY') });
   }
 

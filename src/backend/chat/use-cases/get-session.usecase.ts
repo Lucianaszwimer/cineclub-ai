@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { NotFoundError } from '../../common/errors/app.error';
 import { ChatRepository } from '../repositories/chat.repository';
 
 @Injectable()
 export class GetSessionUseCase {
-  constructor(private readonly chatRepository: ChatRepository) {}
+  constructor(@Inject(ChatRepository) private readonly chatRepository: ChatRepository) {}
 
   async execute(id: string) {
     const session = await this.chatRepository.findSessionById(id);

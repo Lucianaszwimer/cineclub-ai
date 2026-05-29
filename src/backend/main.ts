@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
@@ -10,6 +11,10 @@ async function bootstrap() {
   const config = app.get(AppConfigService);
   const logger = new Logger('Bootstrap');
 
+  app.enableCors({
+    origin: ['http://localhost:5173'],
+    credentials: true
+  });
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
 

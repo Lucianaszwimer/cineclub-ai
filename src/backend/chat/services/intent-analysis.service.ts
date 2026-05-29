@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 import { intentAnalysisSchema } from '../schemas/intent.schema';
 import { INTENT_SYSTEM_PROMPT } from '../prompts/intent.prompt';
@@ -9,7 +9,7 @@ import { AppConfigService } from '../../config/config.service';
 export class IntentAnalysisService {
   private readonly openai: OpenAI;
 
-  constructor(private readonly config: AppConfigService) {
+  constructor(@Inject(AppConfigService) private readonly config: AppConfigService) {
     this.openai = new OpenAI({ apiKey: this.config.get('OPENAI_API_KEY') });
   }
 

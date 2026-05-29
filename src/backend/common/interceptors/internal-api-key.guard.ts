@@ -1,10 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Inject, Injectable } from '@nestjs/common';
 import { AppConfigService } from '../../config/config.service';
 import { ValidationError } from '../errors/app.error';
 
 @Injectable()
 export class InternalApiKeyGuard implements CanActivate {
-  constructor(private readonly config: AppConfigService) {}
+  constructor(@Inject(AppConfigService) private readonly config: AppConfigService) {}
 
   canActivate(context: ExecutionContext): boolean {
     const expectedKey = this.config.get('INTERNAL_API_KEY');

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { z } from 'zod';
 import { Movie } from '../../chat/interfaces/chat.types';
 import { MovieFilters } from '../interfaces/movie-filters';
@@ -38,8 +38,8 @@ export class MovieSearchService {
   };
 
   constructor(
-    private readonly tmdbRepository: TmdbApiRepository,
-    private readonly tmdbMovieAdapter: TmdbMovieAdapter
+    @Inject(TmdbApiRepository) private readonly tmdbRepository: TmdbApiRepository,
+    @Inject(TmdbMovieAdapter) private readonly tmdbMovieAdapter: TmdbMovieAdapter
   ) {}
 
   private cleanText(str: string): string {

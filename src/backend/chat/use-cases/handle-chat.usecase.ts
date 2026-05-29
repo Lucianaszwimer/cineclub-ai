@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { z } from 'zod';
 import { ValidationError } from '../../common/errors/app.error';
@@ -29,10 +29,10 @@ export interface HandleChatResponse {
 @Injectable()
 export class HandleChatUseCase {
   constructor(
-    private readonly chatRepository: ChatRepository,
-    private readonly movieSearchService: MovieSearchService,
-    private readonly intentAnalysisService: IntentAnalysisService,
-    private readonly generalChatService: GeneralChatService
+    @Inject(ChatRepository) private readonly chatRepository: ChatRepository,
+    @Inject(MovieSearchService) private readonly movieSearchService: MovieSearchService,
+    @Inject(IntentAnalysisService) private readonly intentAnalysisService: IntentAnalysisService,
+    @Inject(GeneralChatService) private readonly generalChatService: GeneralChatService
   ) {}
 
   async execute(messages: ChatMessage[], sessionId?: string): Promise<HandleChatResponse> {

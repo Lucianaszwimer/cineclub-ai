@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post, UseGuards, UsePipes } from '@nestjs/common';
 import { getSessionParamsSchema, PostChatDto, postChatSchema } from '../dto/chat.dto';
 import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 import { HandleChatUseCase } from '../use-cases/handle-chat.usecase';
@@ -9,8 +9,8 @@ import { InternalApiKeyGuard } from '../../common/interceptors/internal-api-key.
 @UseGuards(InternalApiKeyGuard)
 export class ChatController {
   constructor(
-    private readonly handleChatUseCase: HandleChatUseCase,
-    private readonly getSessionUseCase: GetSessionUseCase
+    @Inject(HandleChatUseCase) private readonly handleChatUseCase: HandleChatUseCase,
+    @Inject(GetSessionUseCase) private readonly getSessionUseCase: GetSessionUseCase
   ) {}
 
   @Post()
