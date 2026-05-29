@@ -20,6 +20,7 @@ export default function ChatWindow({
 }: ChatWindowProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function ChatWindow({
     setMessages(updatedMessages);
     setInput('');
     setIsLoading(true);
+    setError('');
 
     try {
       const response = await fetch(apiUrl('/chat'), {
@@ -61,9 +63,12 @@ export default function ChatWindow({
         if (currentSessionId) {
           onSessionPersist(currentSessionId, finalMessages);
         }
+      } else {
+        setError(data.message || data.error || 'No se pudo obtener respuesta del servidor.');
       }
     } catch (error) {
       console.error('Error al enviar mensaje:', error);
+      setError('No se pudo conectar con el servidor.');
     } finally {
       setIsLoading(false);
     }
@@ -90,6 +95,12 @@ export default function ChatWindow({
       </div>
 
       <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-zinc-950/40 to-zinc-900/40">
+        {error && (
+          <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            {error}
+          </div>
+        )}
+
         {messages.length === 0 && (
           <div className="text-center py-12 px-4 text-zinc-500 space-y-2">
             <p className="text-lg font-medium text-zinc-400">¡Hola! Te doy la bienvenida al Cineclub. 🎉</p>
