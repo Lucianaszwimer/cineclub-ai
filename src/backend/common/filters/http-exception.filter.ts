@@ -1,7 +1,16 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
-import { Request, Response } from 'express';
 import { ZodError } from 'zod';
 import { AppError } from '../errors/app.error';
+
+type RequestLike = {
+  headers: Record<string, string | string[] | undefined>;
+  url: string;
+};
+
+type ResponseLike = {
+  status(code: number): ResponseLike;
+  json(payload: unknown): void;
+};
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -9,8 +18,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<ResponseLike>();
+    const request = ctx.getRequest<RequestLike>();
 
     const requestId = request.headers['x-request-id'];
 

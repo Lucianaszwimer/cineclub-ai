@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Inject, Param, Post, UseGuards, UsePipes } from '@nestjs/common';
-import { getSessionParamsSchema, PostChatDto, postChatSchema } from '../dto/chat.dto';
+import { getSessionParamsSchema, postChatSchema } from '../dto/chat.dto';
+import type { PostChatDto } from '../dto/chat.dto';
 import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 import { HandleChatUseCase } from '../use-cases/handle-chat.usecase';
 import { GetSessionUseCase } from '../use-cases/get-session.usecase';
@@ -15,8 +16,9 @@ export class ChatController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(postChatSchema))
-  async postChat(@Body() body: PostChatDto) {
-    return this.handleChatUseCase.execute(body.messages, body.sessionId);
+  async postChat(@Body() body: unknown) {
+    const { messages, sessionId } = body as PostChatDto;
+    return this.handleChatUseCase.execute(messages, sessionId);
   }
 
   @Get(':id')

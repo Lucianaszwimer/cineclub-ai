@@ -7,15 +7,9 @@ import { IntentAnalysisService } from '../services/intent-analysis.service';
 import { GeneralChatService } from '../services/general-chat.service';
 import { ChatMessage } from '../interfaces/chat.types';
 import { ChatRepository } from '../repositories/chat.repository';
+import { chatMessageSchema } from '../dto/chat.dto';
 
-const incomingMessagesSchema = z.array(
-  z.object({
-    role: z.enum(['user', 'assistant', 'system']),
-    content: z.string().min(1),
-    movies: z.array(z.unknown()).optional(),
-    createdAt: z.coerce.date().optional()
-  })
-).min(1);
+const incomingMessagesSchema = z.array(chatMessageSchema).min(1);
 
 export interface HandleChatResponse {
   sessionId: string;
