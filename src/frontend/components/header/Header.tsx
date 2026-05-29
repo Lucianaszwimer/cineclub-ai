@@ -6,6 +6,22 @@ interface HeaderProps {
   onSessionLoaded: (id: string, messages: ChatMessage[]) => void;
 }
 
+function getErrorMessage(payload: unknown, fallback: string): string {
+  if (typeof payload === 'string') return payload;
+  if (payload && typeof payload === 'object') {
+    const candidate = payload as { message?: unknown; error?: unknown };
+    if (typeof candidate.message === 'string') return candidate.message;
+    if (typeof candidate.error === 'string') return candidate.error;
+    if (candidate.message && typeof candidate.message === 'object') {
+      const nested = candidate.message as { message?: unknown; error?: unknown };
+      if (typeof nested.message === 'string') return nested.message;
+      if (typeof nested.error === 'string') return nested.error;
+    }
+  }
+
+  return fallback;
+}
+
 export default function Header({ onSessionLoaded }: HeaderProps) {
   const [searchId, setSearchId] = useState('');
   const [error, setError] = useState('');
@@ -23,7 +39,7 @@ export default function Header({ onSessionLoaded }: HeaderProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'ID de sesión no válido');
+        setError(getErrorMessage(data, `ID de sesión no válido (HTTP ${response.status})`));
         return;
       }
 

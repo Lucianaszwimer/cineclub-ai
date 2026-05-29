@@ -11,6 +11,22 @@ interface ChatWindowProps {
   onSessionPersist: (id: string, messages: ChatMessage[]) => void;
 }
 
+function getErrorMessage(payload: unknown, fallback: string): string {
+  if (typeof payload === 'string') return payload;
+  if (payload && typeof payload === 'object') {
+    const candidate = payload as { message?: unknown; error?: unknown };
+    if (typeof candidate.message === 'string') return candidate.message;
+    if (typeof candidate.error === 'string') return candidate.error;
+    if (candidate.message && typeof candidate.message === 'object') {
+      const nested = candidate.message as { message?: unknown; error?: unknown };
+      if (typeof nested.message === 'string') return nested.message;
+      if (typeof nested.error === 'string') return nested.error;
+    }
+  }
+
+  return fallback;
+}
+
 export default function ChatWindow({
   sessionId,
   setSessionId,
@@ -64,11 +80,11 @@ export default function ChatWindow({
           onSessionPersist(currentSessionId, finalMessages);
         }
       } else {
-        setError(data.message || data.error || 'No se pudo obtener respuesta del servidor.');
+        setError(getErrorMessage(data, `No se pudo obtener respuesta del servidor (HTTP ${response.status}).`));
       }
     } catch (error) {
       console.error('Error al enviar mensaje:', error);
-      setError('No se pudo conectar con el servidor.');
+      setError(error instanceof Error ? error.message : 'No se pudo conectar con el servidor.');
     } finally {
       setIsLoading(false);
     }
