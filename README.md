@@ -2,7 +2,9 @@
 ### Llegó la solución para tus sábados a la noche! 🥳🙌🎬🍿🎥 
 ### Cineclub es una plataforma que te ayuda a elegir qué pelicula ver entre todas las opciones posibles. ¿Cómo lo hace? A través de un chatbot contruido con inteligencia artifical que te arma una lista de peliculas en base a tus preferencias de género, año de lanzamiento, rating global e idioma original.
 ### Antes tenías que entrar a cada servicio de streaming, ver que peliculas tienen para ofrecer, filtrarlas por el genero que te guste, seleccionar una entre todas las opciones y buscar que reviews tiene. Ahora todo eso se simplifica con un click!
-![alt text](/src/public/image.png)
+https://cineclub-ai.vercel.app/
+
+![alt text](/public/image.png)
 ### **Problema que resuelve: ¿Qué flujo de trabajo manual automatiza o simplifica?**
 Hoy en día con tantas plataformas de streaming, tantas recomendaciones diversas y tanto 
 contenido por ver, son muchas las propuestas de películas para ver en tu tiempo libre.
