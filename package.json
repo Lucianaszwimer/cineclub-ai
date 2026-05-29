@@ -9,7 +9,7 @@
     "dev:full": "concurrently \"npm run dev\" \"npm run dev:nest\"",
     "lint": "eslint",
     "build:front": "vite build",
-    "build:back": "./node_modules/.bin/nest build", 
+    "build:back": "tsc -p tsconfig.json", 
     "build": "npm run build:front && npm run build:back",
     "start": "node dist/backend/main.js",
     "preview": "vite preview"
